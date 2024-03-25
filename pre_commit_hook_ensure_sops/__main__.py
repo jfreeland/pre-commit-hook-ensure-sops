@@ -57,7 +57,8 @@ def check_file(filename):
             # All sops encrypted files are valid JSON or YAML
             return False, f"{filename}: Not valid JSON or YAML, is not properly encrypted"
 
-    print(doc)
+    if doc is None:
+        return True, f"{filename} is an empty document"
 
     if 'sops' not in doc:
         # sops puts a `sops` key in the encrypted output. If it is not
@@ -84,12 +85,11 @@ def main():
     args = argparser.parse_args()
 
     failed_messages = []
-    print(args.filenames)
 
     for f in args.filenames:
-        print(f)
         is_valid, message = check_file(f)
 
+        print(message)
         if not is_valid:
             failed_messages.append(message)
 
